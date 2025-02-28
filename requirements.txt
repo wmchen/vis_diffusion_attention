@@ -1,0 +1,7 @@
+numpy<2.0.0
+diffusers==0.31.0
+transformers==4.47.0
+accelerate
+protobuf
+sentencepiece
+mlcbase
