@@ -18,13 +18,9 @@ width = 1024
 [execute]
 prompts = [
     "An astronaut riding a horse on mars, 4K, photorealistic, sharp focus, best quality",
-    # "A photo of a running dog and a sleeping cat beside the beach.",
-    # "A tree with lightning and the moon."
 ]
 target_token = [
     ["astronaut", "horse", "mars"],
-    # ["dog", "cat", "beach"],
-    # ["tree", "lightning", "moon"]
 ]
 
 [execute.model]
