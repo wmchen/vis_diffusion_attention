@@ -1,0 +1,38 @@
+[model]
+type = "StableDiffusionXLPipeline"
+# pretrained_model_name_or_path = "stabilityai/stable-diffusion-xl-base-1.0"
+pretrained_model_name_or_path = "/home/ailab/model_weights/stable-diffusion/sdxl-base-v1.0/"
+torch_dtype = "fp16"
+variant = "fp16"
+
+[hook]
+type = "StableDiffusionVisAttentionHook"
+vis_cross_attn = true
+vis_self_attn = false
+save_dir = "sdxl_cross_attention_outputs/"
+hook_steps = 0
+hook_attn_scale = 32
+hook_down_blocks = true
+hook_mid_block = false
+hook_up_blocks = true
+num_inference_steps = 50
+height = 1024
+width = 1024
+
+[execute]
+prompts = [
+    "An astronaut riding a horse on mars, 4K, photorealistic, sharp focus, best quality",
+]
+target_token = [
+    ["astronaut", "horse", "mars"],
+]
+
+[execute.model]
+height = 1024
+width = 1024
+guidance_scale = 5.0
+num_inference_steps = 50
+
+[execute.hook]
+apply_heat_map = true
+renorm = false

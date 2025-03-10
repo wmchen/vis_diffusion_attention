@@ -1,7 +1,7 @@
 import torch
 from diffusers import FluxPipeline
 
-from flux_attention import VisAttentionHook
+from vis_attn import VisAttentionHook
 
 
 pipe = FluxPipeline.from_pretrained("/home/ailab/ailab_weights/flux/FLUX.1-dev/", torch_dtype=torch.bfloat16)

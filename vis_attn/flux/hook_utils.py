@@ -3,7 +3,6 @@ from typing import Optional, Union, List
 import numpy as np
 from diffusers import FluxPipeline
 from diffusers.models.attention_processor import FluxAttnProcessor2_0
-from mlcbase import Logger
 
 from .processor_utils import AttnProcessorWithHook
 
@@ -27,7 +26,7 @@ def renorm_attention(attn: np.ndarray, renorm: bool):
 class AttentionHook:
     def __init__(
         self, 
-        flux_pipe: FluxPipeline, 
+        pipe: FluxPipeline, 
         hook_steps: Optional[Union[int, List[int]]] = None,
         hook_trans_block: bool = True,
         hook_single_trans_block: bool = False,
@@ -35,18 +34,16 @@ class AttentionHook:
         max_sequence_length: int = 512,
         height: int = 1024,
         width: int = 1024,
-        logger: Optional[Logger] = None
     ):
         assert hook_steps is None or isinstance(hook_steps, (int, list)), "hook_steps must be int or list of int if specified."
 
-        self.pipe = flux_pipe
+        self.pipe = pipe
         self.hook_trans_block = hook_trans_block
         self.hook_single_trans_block = hook_single_trans_block
         self.num_inference_steps = num_inference_steps
         self.max_sequence_length = max_sequence_length
         self.height = height
         self.width = width
-        self.logger = logger
 
         num_transformer_blocks = self.pipe.transformer.config.num_layers
         num_single_transformer_blocks = self.pipe.transformer.config.num_single_layers
@@ -55,9 +52,8 @@ class AttentionHook:
         else:
             if isinstance(hook_steps, int):
                 hook_steps = [hook_steps]
-            else:
-                for step in hook_steps:
-                    assert step < num_inference_steps, f"step {step} is out of range."
+            for step in hook_steps:
+                assert step < num_inference_steps, f"step {step} is out of range."
         self.hook_steps = hook_steps
         self.trans_selected_ids = []
         self.single_trans_selected_ids = []
@@ -67,7 +63,7 @@ class AttentionHook:
             if hook_single_trans_block:
                 self.single_trans_selected_ids.extend([i for i in range(step*num_single_transformer_blocks, (step+1)*num_single_transformer_blocks)])
 
-        self.transformer = flux_pipe.transformer
+        self.transformer = pipe.transformer
         self.trans_block_counter = 0
         self.single_trans_block_counter = 0
 
